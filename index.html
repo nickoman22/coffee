@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Office Coffee Fund</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --accent: #ffb347;
+      --accent-dark: #ff9a2f;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --danger: #ef4444;
+      --border: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      color: var(--text-main);
+      background:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.8)),
+        url("wallpaper.jpg") center/cover fixed no-repeat;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 520px;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 24px 20px 20px;
+      box-shadow: 0 18px 50px rgba(15, 23, 42, 0.18);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .badge {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      background: rgba(255, 179, 71, 0.16);
+      color: #b45309;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .coffee-icon {
+      font-size: 28px;
+    }
+
+    h1 {
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    .summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .summary-main {
+      font-size: 15px;
+    }
+
+    .summary span {
+      font-weight: 600;
+      color: var(--accent-dark);
+    }
+
+    .summary small {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .settings {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 110px;
+    }
+
+    label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    input[type="number"],
+    input[type="text"] {
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 13px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    input[type="number"]:focus,
+    input[type="text"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(248, 180, 72, 0.3);
+    }
+
+    .people-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .people-table thead {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .people-table th,
+    .people-table td {
+      padding: 6px 4px;
+      text-align: center;
+    }
+
+    .people-table th:first-child,
+    .people-table td:first-child {
+      text-align: left;
+      padding-left: 4px;
+    }
+
+    .people-table tbody tr:nth-child(odd) {
+      background: rgba(248, 250, 252, 0.9);
+    }
+
+    .name-cell {
+      font-weight: 600;
+    }
+
+    .count-display {
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+    }
+
+    button {
+      border-radius: 999px;
+      border: none;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: transform 0.07s ease, box-shadow 0.07s ease,
+        background 0.15s ease, opacity 0.15s ease;
+      white-space: nowrap;
+    }
+
+    button:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: none;
+    }
+
+    .btn-add {
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: #fff;
+      box-shadow: 0 8px 22px rgba(248, 180, 72, 0.6);
+      min-width: 64px;
+    }
+
+    .btn-minus {
+      background: #e2e8f0;
+      color: #0f172a;
+      min-width: 40px;
+    }
+
+    .btn-reset {
+      margin-left: auto;
+      display: inline-flex;
+      background: #fee2e2;
+      color: var(--danger);
+      padding: 6px 12px;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .btn-reset:hover {
+      background: #fecaca;
+    }
+
+    .backup-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+      justify-content: flex-end;
+    }
+
+    .btn-backup {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-size: 12px;
+      padding: 6px 10px;
+    }
+
+    .btn-backup:hover {
+      background: #bae6fd;
+    }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .footer-note span {
+      font-weight: 600;
+      color: var(--accent-dark);
+    }
+
+    @media (max-width: 500px) {
+      .card {
+        padding: 20px 14px 16px;
+        border-radius: 20px;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
+
+      .settings {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .people-table th,
+      .people-table td {
+        padding: 6px 2px;
+      }
+
+      .btn-add,
+      .btn-minus {
+        padding: 5px 8px;
+        font-size: 12px;
+      }
+
+      .backup-buttons {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="badge">Office Coffee Fund</div>
+
+    <div class="title-row">
+      <div class="coffee-icon">☕</div>
+      <div>
+        <h1 id="teamNameHeading">Coffee Counter</h1>
+        <p class="subtitle">
+          Tap +1 every time someone grabs a coffee. At the end of the week,
+          add the total to your coffee kitty.
+        </p>
+      </div>
+    </div>
+
+    <section class="settings">
+      <div class="field-group">
+        <label for="pricePerCoffee">Price per coffee</label>
+        <input
+          type="number"
+          id="pricePerCoffee"
+          min="0"
+          step="0.10"
+          value="1.50"
+        />
+      </div>
+
+      <div class="field-group">
+        <label for="currency">Currency</label>
+        <input
+          type="text"
+          id="currency"
+          maxlength="3"
+          value="€"
+          style="max-width: 60px; text-align: center"
+        />
+      </div>
+
+      <div class="field-group" style="flex: 1">
+        <label for="teamName">Title</label>
+        <input
+          type="text"
+          id="teamName"
+          placeholder="e.g. ITS & Friends Coffee Fund"
+        />
+      </div>
+    </section>
+
+    <section class="summary">
+      <div class="summary-main">
+        Total coffees: <span id="totalCoffees">0</span>
+      </div>
+      <div>
+        <div>
+          Fund total:
+          <span id="totalFund">0.00</span><span id="currencyLabel">€</span>
+        </div>
+        <small>(all people combined)</small>
+      </div>
+    </section>
+
+    <section>
+      <table class="people-table">
+        <thead>
+          <tr>
+            <th>Person</th>
+            <th>Coffees</th>
+            <th></th>
+            <th></th>
+            <th>€</th>
+          </tr>
+        </thead>
+        <tbody id="peopleBody">
+          <tr data-name="ITS">
+            <td class="name-cell">ITS</td>
+            <td><span class="count-display" id="count-ITS">0</span></td>
+            <td>
+              <button class="btn-add" data-action="add" data-name="ITS">+1</button>
+            </td>
+            <td>
+              <button class="btn-minus" data-action="minus" data-name="ITS">−1</button>
+            </td>
+            <td><span id="amount-ITS">0.00</span></td>
+          </tr>
+          <tr data-name="IDA">
+            <td class="name-cell">IDA</td>
+            <td><span class="count-display" id="count-IDA">0</span></td>
+            <td>
+              <button class="btn-add" data-action="add" data-name="IDA">+1</button>
+            </td>
+            <td>
+              <button class="btn-minus" data-action="minus" data-name="IDA">−1</button>
+            </td>
+            <td><span id="amount-IDA">0.00</span></td>
+          </tr>
+          <tr data-name="AV">
+            <td class="name-cell">AV</td>
+            <td><span class="count-display" id="count-AV">0</span></td>
+            <td>
+              <button class="btn-add" data-action="add" data-name="AV">+1</button>
+            </td>
+            <td>
+              <button class="btn-minus" data-action="minus" data-name="AV">−1</button>
+            </td>
+            <td><span id="amount-AV">0.00</span></td>
+          </tr>
+          <tr data-name="NKO">
+            <td class="name-cell">NKO</td>
+            <td><span class="count-display" id="count-NKO">0</span></td>
+            <td>
+              <button class="btn-add" data-action="add" data-name="NKO">+1</button>
+            </td>
+            <td>
+              <button class="btn-minus" data-action="minus" data-name="NKO">−1</button>
+            </td>
+            <td><span id="amount-NKO">0.00</span></td>
+          </tr>
+          <tr data-name="GSP">
+            <td class="name-cell">GSP</td>
+            <td><span class="count-display" id="count-GSP">0</span></td>
+            <td>
+              <button class="btn-add" data-action="add" data-name="GSP">+1</button>
+            </td>
+            <td>
+              <button class="btn-minus" data-action="minus" data-name="GSP">−1</button>
+            </td>
+            <td><span id="amount-GSP">0.00</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button class="btn-reset" id="resetBtn">Reset all counters</button>
+
+      <div class="backup-buttons">
+        <button class="btn-backup" id="exportBtn">Download backup</button>
+        <button class="btn-backup" id="importBtn">Import backup</button>
+        <input type="file" id="importFile" accept=".json,application/json" style="display:none" />
+      </div>
+    </section>
+
+    <p class="footer-note">
+      Saved locally in this browser using <span>localStorage</span>.  
+      Use backup buttons to keep your progress safe.
+    </p>
+  </main>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = "officeCoffeeFund_multi_v1";
+      const members = ["ITS", "IDA", "AV", "NKO", "GSP"];
+
+      let state = {
+        price: 1.5,
+        currency: "€",
+        teamName: "Coffee Counter",
+        counts: {
+          ITS: 0,
+          IDA: 0,
+          AV: 0,
+          NKO: 0,
+          GSP: 0,
+        },
+      };
+
+      // Elements
+      const priceInput = document.getElementById("pricePerCoffee");
+      const currencyInput = document.getElementById("currency");
+      const teamNameInput = document.getElementById("teamName");
+      const teamNameHeading = document.getElementById("teamNameHeading");
+      const totalCoffeesEl = document.getElementById("totalCoffees");
+      const totalFundEl = document.getElementById("totalFund");
+      const currencyLabelEl = document.getElementById("currencyLabel");
+      const resetBtn = document.getElementById("resetBtn");
+      const peopleBody = document.getElementById("peopleBody");
+
+      const exportBtn = document.getElementById("exportBtn");
+      const importBtn = document.getElementById("importBtn");
+      const importFileInput = document.getElementById("importFile");
+
+      function loadState() {
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            if (!parsed.counts) parsed.counts = {};
+            // Ensure all members exist
+            members.forEach((m) => {
+              if (typeof parsed.counts[m] !== "number") {
+                parsed.counts[m] = 0;
+              }
+            });
+            state = { ...state, ...parsed };
+          }
+        } catch (e) {
+          console.warn("Could not load coffee fund data", e);
+        }
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {
+          console.warn("Could not save coffee fund data", e);
+        }
+      }
+
+      function getTotalCoffees() {
+        return members.reduce((sum, m) => sum + (state.counts[m] || 0), 0);
+      }
+
+      function updateDisplay() {
+        // Settings
+        priceInput.value = state.price.toFixed(2);
+        currencyInput.value = state.currency || "€";
+        currencyLabelEl.textContent = state.currency || "€";
+        teamNameHeading.textContent = state.teamName || "Coffee Counter";
+        teamNameInput.value = state.teamName || "";
+
+        // Per person
+        members.forEach((m) => {
+          const countEl = document.getElementById("count-" + m);
+          const amountEl = document.getElementById("amount-" + m);
+          const count = state.counts[m] || 0;
+          if (countEl) countEl.textContent = count;
+          if (amountEl) amountEl.textContent = (count * state.price).toFixed(2);
+        });
+
+        // Totals
+        const totalCoffees = getTotalCoffees();
+        totalCoffeesEl.textContent = totalCoffees;
+        totalFundEl.textContent = (totalCoffees * state.price).toFixed(2);
+      }
+
+      function changeCount(name, delta) {
+        if (!state.counts[name] && state.counts[name] !== 0) {
+          state.counts[name] = 0;
+        }
+        const newCount = Math.max(0, state.counts[name] + delta);
+        state.counts[name] = newCount;
+        saveState();
+        updateDisplay();
+      }
+
+      // Settings listeners
+      priceInput.addEventListener("change", function () {
+        const value = Number(String(priceInput.value).replace(",", "."));
+        state.price = !isNaN(value) && value >= 0 ? value : 0;
+        saveState();
+        updateDisplay();
+      });
+
+      currencyInput.addEventListener("input", function () {
+        state.currency = currencyInput.value.trim() || "€";
+        saveState();
+        updateDisplay();
+      });
+
+      teamNameInput.addEventListener("input", function () {
+        state.teamName = teamNameInput.value.trim() || "Coffee Counter";
+        saveState();
+        updateDisplay();
+      });
+
+      // Table buttons: event delegation
+      peopleBody.addEventListener("click", function (event) {
+        const btn = event.target.closest("button");
+        if (!btn) return;
+
+        const name = btn.getAttribute("data-name");
+        const action = btn.getAttribute("data-action");
+        if (!name || !action) return;
+
+        if (action === "add") {
+          changeCount(name, 1);
+        } else if (action === "minus") {
+          changeCount(name, -1);
+        }
+      });
+
+      // Reset all
+      resetBtn.addEventListener("click", function () {
+        const sure = window.confirm(
+          "Reset all coffee counters back to 0?\n(This does not reset any real money, only the display.)"
+        );
+        if (!sure) return;
+        members.forEach((m) => (state.counts[m] = 0));
+        saveState();
+        updateDisplay();
+      });
+
+      // ---- Backup export/import ----
+
+      function downloadBackup() {
+        const dataStr = JSON.stringify(state, null, 2);
+        const blob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        const today = new Date().toISOString().slice(0, 10);
+        a.href = url;
+        a.download = `coffee-counter-backup-${today}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      function applyImportedState(imported) {
+        if (!imported || typeof imported !== "object") {
+          alert("Invalid backup file.");
+          return;
+        }
+
+        // Basic validation + defaults
+        const newState = { ...state, ...imported };
+        if (!newState.counts) newState.counts = {};
+        members.forEach((m) => {
+          if (typeof newState.counts[m] !== "number") {
+            newState.counts[m] = 0;
+          }
+        });
+
+        state = newState;
+        saveState();
+        updateDisplay();
+        alert("Backup imported successfully!");
+      }
+
+      exportBtn.addEventListener("click", function () {
+        downloadBackup();
+      });
+
+      importBtn.addEventListener("click", function () {
+        importFileInput.value = "";
+        importFileInput.click();
+      });
+
+      importFileInput.addEventListener("change", function () {
+        const file = importFileInput.files && importFileInput.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          try {
+            const text = e.target.result;
+            const json = JSON.parse(text);
+            applyImportedState(json);
+          } catch (err) {
+            console.error(err);
+            alert("Could not read this backup file. Make sure it is a valid JSON backup from this page.");
+          }
+        };
+        reader.readAsText(file);
+      });
+
+      // Init
+      loadState();
+      updateDisplay();
+    })();
+  </script>
+</body>
+</html>
