@@ -164,7 +164,7 @@
       border-radius: 14px;
       background: rgba(15, 23, 42, 0.75);
       border: 1px solid rgba(148, 163, 184, 0.6);
-      min-width: 150px;
+      min-width: 140px;
     }
 
     .summary-title {
@@ -372,7 +372,7 @@
       <div>
         <h1>Office Coffee Bank</h1>
         <p class="subtitle">
-          Where productivity meets caffeine.
+         FREE COFFEE FOR NKO PLEASE!!!
         </p>
       </div>
     </div>
@@ -414,8 +414,14 @@
       </div>
       <div class="summary-block">
         <div class="summary-title">Total prepaid</div>
-        <div class="summary-value positive">
+        <div class="summary-value">
           <span id="totalPrepaid">0.00</span><span>€</span>
+        </div>
+      </div>
+      <div class="summary-block">
+        <div class="summary-title">Bank balance</div>
+        <div class="summary-value" id="bankBalanceWrapper">
+          <span id="bankBalance">0.00</span><span>€</span>
         </div>
       </div>
     </section>
@@ -546,7 +552,7 @@
 
     <p class="footer-note">
       Saved locally in this browser using <span>localStorage</span>.  
-      Use <strong>Add €</strong> for pre-payments and backups to keep your data safe.
+      Use <strong>Add €</strong> for pre-payments and check <strong>Bank balance</strong> to see what’s left in the kitty.
     </p>
   </main>
 
@@ -587,6 +593,8 @@
       const totalCoffeesEl = document.getElementById("totalCoffees");
       const totalCostEl = document.getElementById("totalCost");
       const totalPrepaidEl = document.getElementById("totalPrepaid");
+      const bankBalanceEl = document.getElementById("bankBalance");
+      const bankBalanceWrapper = document.getElementById("bankBalanceWrapper");
       const currencyLabelEl = document.getElementById("currencyLabel");
 
       const resetBtn = document.getElementById("resetBtn");
@@ -690,10 +698,19 @@
         const totalCoffees = getTotalCoffees();
         const totalCost = getTotalCost();
         const totalPrepaid = getTotalPrepaid();
+        const bankBalance = totalPrepaid - totalCost;
 
         totalCoffeesEl.textContent = totalCoffees;
         totalCostEl.textContent = totalCost.toFixed(2);
         totalPrepaidEl.textContent = totalPrepaid.toFixed(2);
+        bankBalanceEl.textContent = bankBalance.toFixed(2);
+
+        bankBalanceWrapper.classList.remove("positive", "negative");
+        if (bankBalance > 0) {
+          bankBalanceWrapper.classList.add("positive");
+        } else if (bankBalance < 0) {
+          bankBalanceWrapper.classList.add("negative");
+        }
       }
 
       function changeCount(name, delta) {
